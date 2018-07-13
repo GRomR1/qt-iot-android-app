@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/">
+        <file>lamp-off.png</file>
+        <file>lamp-on.png</file>
+        <file>light-sensor-off.png</file>
+        <file>thumbs-up.png</file>
+        <file>thumbs-up-off.png</file>
+        <file>icon.png</file>
+    </qresource>
+</RCC>
