@@ -4,7 +4,24 @@
 #
 #-------------------------------------------------
 
-QT       += core gui mqtt network
+QT       += core gui network
+CONFIG += c++11
+QT += core-private
+
+android {
+    SUBDIRS += \
+        qtmqtt-5.11/mqtt.pro
+
+    include(mqtt/mqtt.pro)
+
+    ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
+}
+
+win {
+    QT += mqtt
+}
+#INCLUDEPATH += C:\tmp\2\qmqtt\src\mqtt
+#LIBS += -LC:\tmp\2\qmqtt\lib -lqmqtt
 
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -24,6 +41,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 
+#INCLUDEPATH += $$PWD/qtmqtt-5.11
+#DEPENDPATH += $$PWD/qtmqtt-5.11
+
 SOURCES += \
         main.cpp \
         mainwindow.cpp
@@ -38,4 +58,15 @@ RESOURCES += \
     resources.qrc
 
 DISTFILES += \
-    .gitignore
+    .gitignore \
+    android/AndroidManifest.xml \
+    android/gradle/wrapper/gradle-wrapper.jar \
+    android/gradlew \
+    android/res/values/libs.xml \
+    android/build.gradle \
+    android/gradle/wrapper/gradle-wrapper.properties \
+    android/gradlew.bat
+
+
+OTHER_FILES += \
+    android/AndroidManifest.xml

@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QDebug>
+#include <QScreen>
+#include <QSize>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -31,10 +33,19 @@ MainWindow::MainWindow(QWidget *parent) :
     m_client->connectToHost();
     QObject::connect(m_client, SIGNAL(connected()), this, SLOT(connected()));
 
-    ui->lampButton->setIcon(QIcon(QPixmap(":/lamp-off.png")));
-    ui->lightSensorButton->setIcon(QIcon(QPixmap("/home/rg/Documents/qt-s3t-app/light-sensor-on.png")));
-    ui->lampButton->setIconSize(QSize(250,250));
-    ui->lightSensorButton->setIconSize(QSize(75,75));
+    qDebug() << this->ui->lampButton->baseSize();
+
+    QScreen *screen = QApplication::screens().at(0);
+    QSize size(screen->size().width(), screen->size().height());
+    qDebug() << "screens size" << size;
+
+
+    ui->likeButton->setIcon(QIcon(QPixmap(":/thumbs-up.png")));
+    ui->likeButton->setIconSize(QSize(size.height()/10,size.height()/10));
+    ui->lampButton->setIcon(QIcon(QPixmap(":/light-bulb-off.png")));
+    ui->lightSensorButton->setIcon(QIcon(QPixmap(":/light-sensor-on.png")));
+    ui->lampButton->setIconSize(QSize(size.width(),size.width()));
+    ui->lightSensorButton->setIconSize(QSize(size.height()/7,size.height()/7));
 //    ui->lampButton->setFixedSize(pixmap.rect().size());
 
 }
@@ -48,11 +59,15 @@ void MainWindow::on_lampButton_toggled(bool checked)
 {
     qDebug() << "lamp button" << checked;
     if(checked){
-        ui->lampButton->setIcon(QIcon(QPixmap("/home/rg/Documents/qt-s3t-app/lamp-on.png")));
+//        ui->lampButton->setIcon(QIcon(QPixmap(":/lamp-on.png")));
+//        ui->lampButton->setIcon(QPixmap(":/light-bulb.svg"));
+        ui->lampButton->setIcon(QIcon(QPixmap(":/light-bulb-on.png")));
         m_client->publish(QMqttTopicName("/sensors/button"),QByteArray("{\"value\":1, \"command\": \"set\", \"user\": \"mobile\"}"));
     }
     else {
-        ui->lampButton->setIcon(QIcon(QPixmap("/home/rg/Documents/qt-s3t-app/lamp-off.png")));
+//        ui->lampButton->setIcon(QIcon(QPixmap(":/lamp-off.png")));
+//        ui->lampButton->setIcon(QPixmap(":/light-bulb-off.svg"));
+        ui->lampButton->setIcon(QIcon(QPixmap(":/light-bulb-off.png")));
         m_client->publish(QMqttTopicName("/sensors/button"),QByteArray("{\"value\":0, \"command\": \"set\", \"user\": \"mobile\"}"));
     }
 }
@@ -61,11 +76,11 @@ void MainWindow::on_lightSensorButton_toggled(bool checked)
 {
     qDebug() << "light button" << checked;
     if(checked){
-        ui->lightSensorButton->setIcon(QIcon(QPixmap("/home/rg/Documents/qt-s3t-app/light-sensor-on.png")));
+        ui->lightSensorButton->setIcon(QIcon(QPixmap(":/light-sensor-off.png")));
         m_client->publish(QMqttTopicName("/sensors/disable_light"),QByteArray("{\"value\":1, \"command\": \"set\", \"user\": \"mobile\"}"));
     }
     else{
-        ui->lightSensorButton->setIcon(QIcon(QPixmap("/home/rg/Documents/qt-s3t-app/light-sensor-off.png")));
+        ui->lightSensorButton->setIcon(QIcon(QPixmap(":/light-sensor-on.png")));
         m_client->publish(QMqttTopicName("/sensors/disable_light"),QByteArray("{\"value\":0, \"command\": \"set\", \"user\": \"mobile\"}"));
     }
 }

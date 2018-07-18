@@ -1,8 +1,11 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+//#include "qmainwindow.h"
+
 #include <QMainWindow>
-#include <QMqttClient>
+#include <mqtt/qmqttclient.h>
+//#include <QtMqtt/QMqttClient>
 
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
