@@ -1,8 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-//#include "qmainwindow.h"
-
 #include <QMainWindow>
 #include <mqtt/qmqttclient.h>
 //#include <QtMqtt/QMqttClient>
@@ -15,6 +13,12 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QJsonArray>
+
+#define MQTT_HOST "dev.s3t.club"
+#define INFLUXDB_HOST "dev.s3t.club"
+#define INFLUXDB_PORT "8087"
+#define INFLUXDB_USER "admin"
+#define INFLUXDB_PASS "ertdfg"
 
 namespace Ui {
 class MainWindow;
@@ -30,14 +34,10 @@ public:
 
 private slots:
     void on_lampButton_toggled(bool checked);
-
     void on_lightSensorButton_toggled(bool checked);
-
     void newMessage(const QMqttMessage &m);
     void connected();
-
     void on_likeButton_clicked();
-
     void replyFinish(QNetworkReply *reply);
 
 private:

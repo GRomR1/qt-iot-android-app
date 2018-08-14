@@ -1,18 +1,7 @@
-
-#lessThan(QT_MAJOR_VERSION, 5) {
-#    error("Cannot build current Qt MQTT sources with Qt version $${QT_VERSION}.")
-#}
-
-#load(configure)
-#load(qt_parts)
-
 TARGET = QtMqtt
-
 
 INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
-
-#QMAKE_DOCS = $$PWD/doc/qtmqtt.qdocconf
 
 PUBLIC_HEADERS += \
     $$PWD/qmqttglobal.h \
@@ -38,5 +27,3 @@ SOURCES += \
     $$PWD/qmqtttopicname.cpp
 
 HEADERS += $$PUBLIC_HEADERS $$PRIVATE_HEADERS
-
-#load(qt_module)

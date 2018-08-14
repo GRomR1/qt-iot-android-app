@@ -1,1 +1,2 @@
-qt-s3t-app.pro.user
+*.user
+*/*.properties~

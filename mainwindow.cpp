@@ -11,43 +11,45 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     nwam = new QNetworkAccessManager;
-    connect(nwam, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinish(QNetworkReply*)));
+    connect(nwam, SIGNAL(finished(QNetworkReply*)),
+            this, SLOT(replyFinish(QNetworkReply*)));
 
     QUrlQuery query;
     query.addQueryItem("db","db");
-    query.addQueryItem("u","admin");
-    query.addQueryItem("p","ertdfg");
+    query.addQueryItem("u",INFLUXDB_USER);
+    query.addQueryItem("p",INFLUXDB_PASS);
     query.addQueryItem("q","SELECT sum(value) FROM sensors WHERE topic = '/sensors/like'");
-    QString   apiUrl("http://dev.s3t.club:8087/query");
+    QString apiUrl(QString("http://")+INFLUXDB_HOST+":"+INFLUXDB_PORT+"/query");
     QUrl url(apiUrl);
     url.setQuery(query);
 
     QNetworkRequest request;
     request.setUrl(url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("application/x-www-form-urlencoded"));
+    request.setHeader(QNetworkRequest::ContentTypeHeader,
+                      QVariant("application/x-www-form-urlencoded"));
     nwam->get(request);
 
     m_client = new QMqttClient(this);
-    m_client->setHostname("dev.s3t.club");
+    m_client->setHostname(QString(MQTT_HOST));
     m_client->setPort(1884);
     m_client->connectToHost();
     QObject::connect(m_client, SIGNAL(connected()), this, SLOT(connected()));
-
-    qDebug() << this->ui->lampButton->baseSize();
 
     QScreen *screen = QApplication::screens().at(0);
     QSize size(screen->size().width(), screen->size().height());
     qDebug() << "screens size" << size;
 
 
-    ui->likeButton->setIcon(QIcon(QPixmap(":/thumbs-up.png")));
-    ui->likeButton->setIconSize(QSize(size.height()/10,size.height()/10));
     ui->lampButton->setIcon(QIcon(QPixmap(":/light-bulb-off.png")));
     ui->lightSensorButton->setIcon(QIcon(QPixmap(":/light-sensor-on.png")));
     ui->lampButton->setIconSize(QSize(size.width(),size.width()));
     ui->lightSensorButton->setIconSize(QSize(size.height()/7,size.height()/7));
-//    ui->lampButton->setFixedSize(pixmap.rect().size());
 
+    //  hide useless like button
+    ui->likeButton->hide();
+    ui->likeLabel->hide();
+    //    ui->likeButton->setIcon(QIcon(QPixmap(":/thumbs-up.png")));
+    //    ui->likeButton->setIconSize(QSize(size.height()/10,size.height()/10));
 }
 
 MainWindow::~MainWindow()
@@ -59,16 +61,14 @@ void MainWindow::on_lampButton_toggled(bool checked)
 {
     qDebug() << "lamp button" << checked;
     if(checked){
-//        ui->lampButton->setIcon(QIcon(QPixmap(":/lamp-on.png")));
-//        ui->lampButton->setIcon(QPixmap(":/light-bulb.svg"));
         ui->lampButton->setIcon(QIcon(QPixmap(":/light-bulb-on.png")));
-        m_client->publish(QMqttTopicName("/sensors/button"),QByteArray("{\"value\":1, \"command\": \"set\", \"user\": \"mobile\"}"));
+        m_client->publish(QMqttTopicName("/sensors/button"),
+                          QByteArray("{\"value\":1, \"command\": \"set\", \"user\": \"mobile\"}"));
     }
     else {
-//        ui->lampButton->setIcon(QIcon(QPixmap(":/lamp-off.png")));
-//        ui->lampButton->setIcon(QPixmap(":/light-bulb-off.svg"));
         ui->lampButton->setIcon(QIcon(QPixmap(":/light-bulb-off.png")));
-        m_client->publish(QMqttTopicName("/sensors/button"),QByteArray("{\"value\":0, \"command\": \"set\", \"user\": \"mobile\"}"));
+        m_client->publish(QMqttTopicName("/sensors/button"),
+                          QByteArray("{\"value\":0, \"command\": \"set\", \"user\": \"mobile\"}"));
     }
 }
 
@@ -77,11 +77,13 @@ void MainWindow::on_lightSensorButton_toggled(bool checked)
     qDebug() << "light button" << checked;
     if(checked){
         ui->lightSensorButton->setIcon(QIcon(QPixmap(":/light-sensor-off.png")));
-        m_client->publish(QMqttTopicName("/sensors/disable_light"),QByteArray("{\"value\":1, \"command\": \"set\", \"user\": \"mobile\"}"));
+        m_client->publish(QMqttTopicName("/sensors/disable_light"),
+                          QByteArray("{\"value\":1, \"command\": \"set\", \"user\": \"mobile\"}"));
     }
     else{
         ui->lightSensorButton->setIcon(QIcon(QPixmap(":/light-sensor-on.png")));
-        m_client->publish(QMqttTopicName("/sensors/disable_light"),QByteArray("{\"value\":0, \"command\": \"set\", \"user\": \"mobile\"}"));
+        m_client->publish(QMqttTopicName("/sensors/disable_light"),
+                          QByteArray("{\"value\":0, \"command\": \"set\", \"user\": \"mobile\"}"));
     }
 }
 
@@ -111,7 +113,8 @@ void MainWindow::connected()
 
 void MainWindow::on_likeButton_clicked()
 {
-    m_client->publish(QMqttTopicName("/sensors/like"),QByteArray("{\"value\":1, \"command\": \"add\", \"user\": \"mobile\"}"));
+    m_client->publish(QMqttTopicName("/sensors/like"),
+                      QByteArray("{\"value\":1, \"command\": \"add\", \"user\": \"mobile\"}"));
     auto likes = this->ui->likeLabel->text().toInt();
     this->ui->likeLabel->setText(QString::number(likes+1));
 }
@@ -137,6 +140,7 @@ void MainWindow::replyFinish(QNetworkReply *reply)
             QJsonValue value = values.at(0).toArray().at(1);
             qDebug() << time.toString();
             qDebug() << value.toInt(0);
+
             this->ui->likeLabel->setText(QString::number(value.toInt(0)));
         }
     }
