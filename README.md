@@ -5,7 +5,7 @@ An example Android application to control home light (power on/off).
 ![Screen](screens/animated.gif)
 
 I wrote this project to control my IoT demonstration stand on the 
-[iVolga-2018] (http://ivolgaforum.ru/) young people forum.
+[iVolga-2018](http://ivolgaforum.ru/) young people forum.
 
 ![Stand photo](photo/stand1.jpg)
 
