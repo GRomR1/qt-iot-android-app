@@ -1,12 +1,13 @@
 # qt-iot-android-app
 
 An example Android application to control home light (power on/off).
+
 ![Screen](screens/animated.gif)
 
 I wrote this project to control my IoT demonstration stand on the 
 [iVolga-2018] (http://ivolgaforum.ru/) young people forum.
+
 ![Stand photo](photo/stand1.jpg)
-![Stand photo](photo/stand2.jpg)
 
 It is communicating with a private MQTT Server. A configured ESP8266 module 
 that connected with the MQTT Server listens to the commands from the application.
