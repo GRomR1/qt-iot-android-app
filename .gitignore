@@ -1,2 +1,5 @@
 *.user
 */*.properties~
+
+android/gradle.properties
+android/local.properties
